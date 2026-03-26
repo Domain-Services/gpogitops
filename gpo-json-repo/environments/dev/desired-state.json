@@ -1,0 +1,9 @@
+{
+  "environment": "dev",
+  "domain": "ds.team",
+  "target_ou": "DC=ds,DC=team",
+  "policies": [
+    "policies/example-disable-cmd.json",
+    "policies/disable-registry-tools.json"
+  ]
+}

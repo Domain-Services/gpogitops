@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gpo-apply-service-dev
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://bitbucket.org/<workspace>/<repo>.git
+    targetRevision: main
+    path: deploy/runtime/dev
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: gpo-system
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
+    syncOptions:
+      - CreateNamespace=true

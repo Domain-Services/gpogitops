@@ -1,0 +1,18 @@
+{
+  "id": "policy-disable-registry-tools",
+  "name": "Disable Registry Editing Tools",
+  "path": "User Configuration/Administrative Templates/System",
+  "description": "Prevents users from running Registry Editor tools",
+  "settings": [
+    {
+      "registry_path": "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+      "value_name": "DisableRegistryTools",
+      "value_type": "REG_DWORD",
+      "value": 1
+    }
+  ],
+  "metadata": {
+    "risk": "medium",
+    "owner": "it-ops"
+  }
+}

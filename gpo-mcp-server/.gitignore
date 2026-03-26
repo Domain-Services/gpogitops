@@ -1,0 +1,44 @@
+# Python virtual environment
+venv/
+.venv/
+env/
+
+# Compiled Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Test caches and coverage artifacts
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+junit.xml
+report.xml
+
+# Linter caches
+.ruff_cache/
+
+# Distribution / packaging
+*.egg-info/
+dist/
+build/
+
+# Environment files (may contain secrets)
+.env
+.env.*
+
+# Editor / IDE artifacts
+.DS_Store
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# macOS zip artifacts
+__MACOSX/
+
+# Generated XML deployment artefacts (produced by scripts/gpo_convert.py)
+# These are CI-only artefacts and are never committed to the repository
+generated/

@@ -1,0 +1,40 @@
+steps:
+  yaml-validate:
+    image: python:3.11
+    commands:
+      - pip install pyyaml
+      - python scripts/gpo_validate_yaml.py --root .
+
+  yaml-whatif:
+    image: python:3.11
+    commands:
+      - pip install -e . pyyaml
+      - python scripts/gpo_whatif.py --root . --format yaml
+    when:
+      - event: pull_request
+
+  yaml-to-xml:
+    image: python:3.11
+    commands:
+      - pip install pyyaml
+      - python scripts/gpo_convert.py --root . --out generated/
+      # The downstream GPO apply step reads XML artefacts from generated/
+      # These artefacts are never committed to the repository
+    when:
+      - event: push
+        branch: main
+
+  lint:
+    image: python:3.11
+    commands:
+      - pip install ruff
+      - ruff check app/ tests/ scripts/
+
+  tests:
+    image: python:3.11
+    commands:
+      - pip install -e .[dev]
+      - pytest -q --tb=short --cov=app --cov-report=term-missing --cov-fail-under=60
+
+when:
+  - event: [pull_request, push]

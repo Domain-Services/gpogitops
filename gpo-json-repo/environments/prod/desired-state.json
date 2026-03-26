@@ -1,0 +1,8 @@
+{
+  "environment": "prod",
+  "domain": "corp.example.internal",
+  "target_ou": "OU=Workstations,DC=corp,DC=example,DC=internal",
+  "policies": [
+    "policies/example-disable-cmd.json"
+  ]
+}

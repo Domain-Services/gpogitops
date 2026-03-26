@@ -1,0 +1,18 @@
+{
+  "id": "policy-disable-cmd",
+  "name": "Disable Command Prompt",
+  "path": "User Configuration/Administrative Templates/System",
+  "description": "Prevents interactive cmd.exe usage for standard users",
+  "settings": [
+    {
+      "registry_path": "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\System",
+      "value_name": "DisableCMD",
+      "value_type": "REG_DWORD",
+      "value": 1
+    }
+  ],
+  "metadata": {
+    "risk": "medium",
+    "owner": "secops"
+  }
+}

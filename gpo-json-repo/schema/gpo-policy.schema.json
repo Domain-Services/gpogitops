@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.internal/schemas/gpo-policy.schema.json",
+  "title": "GPO Policy Document",
+  "type": "object",
+  "required": ["id", "name", "path", "settings"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 3
+    },
+    "name": {
+      "type": "string",
+      "minLength": 3
+    },
+    "path": {
+      "type": "string",
+      "description": "Logical policy path/category"
+    },
+    "description": {
+      "type": "string"
+    },
+    "settings": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["registry_path", "value_name", "value_type", "value"],
+        "properties": {
+          "registry_path": { "type": "string" },
+          "value_name": { "type": "string" },
+          "value_type": {
+            "type": "string",
+            "enum": [
+              "REG_SZ",
+              "REG_EXPAND_SZ",
+              "REG_BINARY",
+              "REG_DWORD",
+              "REG_DWORD_BIG_ENDIAN",
+              "REG_MULTI_SZ",
+              "REG_QWORD"
+            ]
+          },
+          "value": {}
+        },
+        "additionalProperties": false
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "risk": {
+          "type": "string",
+          "enum": ["low", "medium", "high"]
+        },
+        "owner": { "type": "string" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}

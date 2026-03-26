@@ -1,0 +1,8 @@
+steps:
+  validate-json:
+    image: python:3.11
+    commands:
+      - python scripts/validate_json_repo.py --root .
+
+when:
+  - event: [pull_request, push]
