@@ -12,11 +12,6 @@ from app.core import audit_event
 
 logger = logging.getLogger(__name__)
 
-# Maximum request body size (1 MB) to prevent denial-of-service via
-# oversized payloads.
-MAX_BODY_BYTES = 1_048_576
-
-
 class ChangeRequestHandler(BaseHTTPRequestHandler):
     """Minimal internal HTTP handler for change-request operations."""
 
@@ -88,10 +83,10 @@ class ChangeRequestHandler(BaseHTTPRequestHandler):
             self._send_json(HTTPStatus.BAD_REQUEST, {"error": "Invalid Content-Length"})
             return
 
-        if content_len > MAX_BODY_BYTES:
+        if content_len > config.settings.max_bytes_per_req:
             self._send_json(
                 HTTPStatus.REQUEST_ENTITY_TOO_LARGE,
-                {"error": f"Request body exceeds {MAX_BODY_BYTES} bytes"},
+                {"error": f"Request body exceeds {config.settings.max_bytes_per_req} bytes"},
             )
             return
 

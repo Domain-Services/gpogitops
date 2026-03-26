@@ -25,10 +25,6 @@ report.xml
 dist/
 build/
 
-# Environment files (may contain secrets)
-.env
-.env.*
-
 # Editor / IDE artifacts
 .DS_Store
 *.swp

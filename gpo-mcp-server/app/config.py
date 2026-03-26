@@ -157,11 +157,10 @@ class Settings:
         }
 
         try:
-            min_pr_reviewers = int(os.environ.get("GPO_MIN_PR_REVIEWERS", "1"))
+            min_pr_reviewers = int(os.environ.get("GPO_MIN_PR_REVIEWERS", "2"))
         except ValueError:
-            min_pr_reviewers = 1
+            min_pr_reviewers = 2
         min_pr_reviewers = max(0, min_pr_reviewers)
-
         audit_log_path_raw = os.environ.get("GPO_AUDIT_LOG_PATH", "")
         audit_log_path = Path(audit_log_path_raw) if audit_log_path_raw else None
 
@@ -181,10 +180,12 @@ class Settings:
             bitbucket_workspace=os.environ.get("BITBUCKET_WORKSPACE"),
             bitbucket_repo_slug=os.environ.get("BITBUCKET_REPO_SLUG"),
             bitbucket_token=os.environ.get("BITBUCKET_TOKEN"),
+            max_bytes_per_req=int(os.environ.get("MAX_BODY_BYTES", "50_000_000")),
             allow_direct_git_writes=allow_direct_git_writes,
             enforce_backend_boundary=enforce_backend_boundary,
             audit_log_path=audit_log_path,
             environment=os.environ.get("GPO_ENVIRONMENT", "production").strip().lower() or "production",
+            
         )
 
         instance.validate()
