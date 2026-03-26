@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<policyDefinitions xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   revision="1.0"
+                   schemaVersion="1.0"
+                   xmlns="http://schemas.microsoft.com/GroupPolicy/2006/07/PolicyDefinitions">
+  <policyNamespaces>
+    <target prefix="testpolicies" namespace="Microsoft.Policies.TestPolicies" />
+  </policyNamespaces>
+
+  <resources minRequiredRevision="1.0" />
+
+  <supportedOn>
+    <definitions>
+      <definition name="SUPPORTED_Windows10" displayName="$(string.SUPPORTED_Windows10)" />
+      <definition name="SUPPORTED_WindowsAll" displayName="$(string.SUPPORTED_WindowsAll)" />
+    </definitions>
+  </supportedOn>
+
+  <categories>
+    <category name="TestCategory" displayName="$(string.TestCategory)" />
+    <category name="SecurityCategory" displayName="$(string.SecurityCategory)">
+      <parentCategory ref="TestCategory" />
+    </category>
+    <category name="NetworkCategory" displayName="$(string.NetworkCategory)">
+      <parentCategory ref="TestCategory" />
+    </category>
+  </categories>
+
+  <policies>
+    <!-- Simple boolean policy -->
+    <policy name="EnableTestFeature"
+            class="Machine"
+            displayName="$(string.EnableTestFeature)"
+            explainText="$(string.EnableTestFeature_Help)"
+            key="SOFTWARE\Policies\TestCompany\TestApp"
+            valueName="EnableFeature">
+      <parentCategory ref="TestCategory" />
+      <supportedOn ref="SUPPORTED_Windows10" />
+      <enabledValue>
+        <decimal value="1" />
+      </enabledValue>
+      <disabledValue>
+        <decimal value="0" />
+      </disabledValue>
+    </policy>
+
+    <!-- Policy with enum options -->
+    <policy name="SecurityLevel"
+            class="Machine"
+            displayName="$(string.SecurityLevel)"
+            explainText="$(string.SecurityLevel_Help)"
+            presentation="$(presentation.SecurityLevel)"
+            key="SOFTWARE\Policies\TestCompany\Security">
+      <parentCategory ref="SecurityCategory" />
+      <supportedOn ref="SUPPORTED_WindowsAll" />
+      <elements>
+        <enum id="SecurityLevelDropdown" valueName="Level" required="true">
+          <item displayName="$(string.SecurityLevel_Low)">
+            <value>
+              <decimal value="1" />
+            </value>
+          </item>
+          <item displayName="$(string.SecurityLevel_Medium)">
+            <value>
+              <decimal value="2" />
+            </value>
+          </item>
+          <item displayName="$(string.SecurityLevel_High)">
+            <value>
+              <decimal value="3" />
+            </value>
+          </item>
+        </enum>
+      </elements>
+    </policy>
+
+    <!-- Policy with text and decimal elements -->
+    <policy name="NetworkSettings"
+            class="User"
+            displayName="$(string.NetworkSettings)"
+            explainText="$(string.NetworkSettings_Help)"
+            presentation="$(presentation.NetworkSettings)"
+            key="SOFTWARE\Policies\TestCompany\Network">
+      <parentCategory ref="NetworkCategory" />
+      <supportedOn ref="SUPPORTED_Windows10" />
+      <elements>
+        <text id="ProxyServer" valueName="ProxyAddress" required="false" maxLength="255" />
+        <decimal id="ProxyPort" valueName="ProxyPort" required="false" minValue="1" maxValue="65535" />
+        <boolean id="UseProxy" valueName="UseProxy">
+          <trueValue>
+            <decimal value="1" />
+          </trueValue>
+          <falseValue>
+            <decimal value="0" />
+          </falseValue>
+        </boolean>
+      </elements>
+    </policy>
+
+    <!-- Policy with list element -->
+    <policy name="AllowedApplications"
+            class="Machine"
+            displayName="$(string.AllowedApplications)"
+            explainText="$(string.AllowedApplications_Help)"
+            presentation="$(presentation.AllowedApplications)"
+            key="SOFTWARE\Policies\TestCompany\AppControl">
+      <parentCategory ref="SecurityCategory" />
+      <supportedOn ref="SUPPORTED_WindowsAll" />
+      <elements>
+        <list id="AllowedAppsList" key="SOFTWARE\Policies\TestCompany\AppControl\AllowedApps" valuePrefix="App" />
+      </elements>
+    </policy>
+  </policies>
+</policyDefinitions>

@@ -1,0 +1,204 @@
+﻿{
+  "index": {
+    "byFileName": {
+      "testpolicies": [
+        "Microsoft.Policies.TestPolicies::EnableTestFeature",
+        "Microsoft.Policies.TestPolicies::SecurityLevel",
+        "Microsoft.Policies.TestPolicies::NetworkSettings",
+        "Microsoft.Policies.TestPolicies::AllowedApplications"
+      ]
+    },
+    "byKey": {
+      "software\\policies\\testcompany\\testapp\\enablefeature": [
+        "Microsoft.Policies.TestPolicies::EnableTestFeature"
+      ],
+      "software\\policies\\testcompany\\network": [
+        "Microsoft.Policies.TestPolicies::NetworkSettings"
+      ],
+      "software\\policies\\testcompany\\network\\useproxy": [
+        "Microsoft.Policies.TestPolicies::NetworkSettings"
+      ],
+      "software\\policies\\testcompany\\appcontrol": [
+        "Microsoft.Policies.TestPolicies::AllowedApplications"
+      ],
+      "software\\policies\\testcompany\\security\\level": [
+        "Microsoft.Policies.TestPolicies::SecurityLevel"
+      ],
+      "software\\policies\\testcompany\\network\\proxyport": [
+        "Microsoft.Policies.TestPolicies::NetworkSettings"
+      ],
+      "software\\policies\\testcompany\\security": [
+        "Microsoft.Policies.TestPolicies::SecurityLevel"
+      ],
+      "software\\policies\\testcompany\\testapp": [
+        "Microsoft.Policies.TestPolicies::EnableTestFeature"
+      ],
+      "software\\policies\\testcompany\\network\\proxyaddress": [
+        "Microsoft.Policies.TestPolicies::NetworkSettings"
+      ]
+    },
+    "byCategory": {
+      "Test Application Settings > Security Settings": [
+        "Microsoft.Policies.TestPolicies::SecurityLevel",
+        "Microsoft.Policies.TestPolicies::AllowedApplications"
+      ],
+      "Test Application Settings": [
+        "Microsoft.Policies.TestPolicies::EnableTestFeature"
+      ],
+      "Test Application Settings > Network Configuration": [
+        "Microsoft.Policies.TestPolicies::NetworkSettings"
+      ]
+    },
+    "byCategoryLower": {
+      "test application settings > security settings": [
+        "Microsoft.Policies.TestPolicies::SecurityLevel",
+        "Microsoft.Policies.TestPolicies::AllowedApplications"
+      ],
+      "test application settings": [
+        "Microsoft.Policies.TestPolicies::EnableTestFeature"
+      ],
+      "test application settings > network configuration": [
+        "Microsoft.Policies.TestPolicies::NetworkSettings"
+      ]
+    }
+  },
+  "policies": [
+    {
+      "class": "Machine",
+      "category": "TestCategory",
+      "valueName": "EnableFeature",
+      "searchText": "enable test feature this policy setting allows you to enable or disable the test feature.\n\nif you enable this policy setting, the test feature will be activated.\n\nif you disable this policy setting, the test feature will be deactivated.\n\nif you do not configure this policy setting, the default behavior applies. test application settings software\\policies\\testcompany\\testapp enablefeature enabletestfeature windows 10 and later",
+      "fileName": "TestPolicies",
+      "enabledValue": {
+        "value": 1,
+        "type": "decimal"
+      },
+      "elements": null,
+      "disabledValue": {
+        "value": 0,
+        "type": "decimal"
+      },
+      "namespace": "Microsoft.Policies.TestPolicies",
+      "key": "SOFTWARE\\Policies\\TestCompany\\TestApp",
+      "supportedOn": "Windows 10 and later",
+      "name": "EnableTestFeature",
+      "categoryPath": [
+        "Test Application Settings"
+      ],
+      "displayName": "Enable Test Feature",
+      "categoryPathDisplay": "Test Application Settings",
+      "explainText": "This policy setting allows you to enable or disable the test feature.\n\nIf you enable this policy setting, the test feature will be activated.\n\nIf you disable this policy setting, the test feature will be deactivated.\n\nIf you do not configure this policy setting, the default behavior applies."
+    },
+    {
+      "class": "Machine",
+      "category": "SecurityCategory",
+      "valueName": "",
+      "fileName": "TestPolicies",
+      "elements": {
+        "id": "SecurityLevelDropdown",
+        "valueName": "Level",
+        "type": "enum",
+        "key": "",
+        "options": [
+          {
+            "displayName": "Low - Minimal security",
+            "value": 1
+          },
+          {
+            "displayName": "Medium - Standard security (Recommended)",
+            "value": 2
+          },
+          {
+            "displayName": "High - Maximum security",
+            "value": 3
+          }
+        ]
+      },
+      "searchText": "configure security level this policy setting allows you to configure the security level for the application.\n\nselect the desired security level from the dropdown menu:\n- low: minimal security checks\n- medium: standard security checks (recommended)\n- high: maximum security with additional validation\n\nif you do not configure this policy setting, medium security level is used by default. test application settings security settings software\\policies\\testcompany\\security securitylevel all windows versions securityleveldropdown level low - minimal security medium - standard security (recommended) high - maximum security",
+      "namespace": "Microsoft.Policies.TestPolicies",
+      "key": "SOFTWARE\\Policies\\TestCompany\\Security",
+      "supportedOn": "All Windows versions",
+      "name": "SecurityLevel",
+      "categoryPath": [
+        "Test Application Settings",
+        "Security Settings"
+      ],
+      "displayName": "Configure Security Level",
+      "categoryPathDisplay": "Test Application Settings > Security Settings",
+      "explainText": "This policy setting allows you to configure the security level for the application.\n\nSelect the desired security level from the dropdown menu:\n- Low: Minimal security checks\n- Medium: Standard security checks (recommended)\n- High: Maximum security with additional validation\n\nIf you do not configure this policy setting, Medium security level is used by default."
+    },
+    {
+      "class": "User",
+      "category": "NetworkCategory",
+      "valueName": "",
+      "fileName": "TestPolicies",
+      "elements": [
+        {
+          "id": "ProxyPort",
+          "valueName": "ProxyPort",
+          "minValue": 1,
+          "maxValue": 65535,
+          "type": "decimal",
+          "key": ""
+        },
+        {
+          "valueName": "UseProxy",
+          "key": "",
+          "type": "boolean",
+          "id": "UseProxy"
+        },
+        {
+          "valueName": "ProxyAddress",
+          "key": "",
+          "type": "text",
+          "id": "ProxyServer"
+        }
+      ],
+      "searchText": "configure network settings this policy setting allows you to configure network proxy settings for the application.\n\nenter the proxy server address and port number. enable \"use proxy\" to activate the proxy configuration.\n\nif you do not configure this policy setting, direct connection is used. test application settings network configuration software\\policies\\testcompany\\network networksettings windows 10 and later proxyport proxyport useproxy useproxy proxyserver proxyaddress",
+      "namespace": "Microsoft.Policies.TestPolicies",
+      "key": "SOFTWARE\\Policies\\TestCompany\\Network",
+      "supportedOn": "Windows 10 and later",
+      "name": "NetworkSettings",
+      "categoryPath": [
+        "Test Application Settings",
+        "Network Configuration"
+      ],
+      "displayName": "Configure Network Settings",
+      "categoryPathDisplay": "Test Application Settings > Network Configuration",
+      "explainText": "This policy setting allows you to configure network proxy settings for the application.\n\nEnter the proxy server address and port number. Enable \"Use Proxy\" to activate the proxy configuration.\n\nIf you do not configure this policy setting, direct connection is used."
+    },
+    {
+      "class": "Machine",
+      "category": "SecurityCategory",
+      "valueName": "",
+      "fileName": "TestPolicies",
+      "elements": {
+        "valueName": "",
+        "key": "SOFTWARE\\Policies\\TestCompany\\AppControl\\AllowedApps",
+        "type": "list",
+        "id": "AllowedAppsList"
+      },
+      "searchText": "allowed applications list this policy setting allows you to specify a list of applications that are allowed to run.\n\nadd the full path or name of each allowed application to the list.\n\nif you enable this policy setting, only applications in the list will be permitted.\n\nif you disable or do not configure this policy setting, all applications are allowed. test application settings security settings software\\policies\\testcompany\\appcontrol allowedapplications all windows versions allowedappslist",
+      "namespace": "Microsoft.Policies.TestPolicies",
+      "key": "SOFTWARE\\Policies\\TestCompany\\AppControl",
+      "supportedOn": "All Windows versions",
+      "name": "AllowedApplications",
+      "categoryPath": [
+        "Test Application Settings",
+        "Security Settings"
+      ],
+      "displayName": "Allowed Applications List",
+      "categoryPathDisplay": "Test Application Settings > Security Settings",
+      "explainText": "This policy setting allows you to specify a list of applications that are allowed to run.\n\nAdd the full path or name of each allowed application to the list.\n\nIf you enable this policy setting, only applications in the list will be permitted.\n\nIf you disable or do not configure this policy setting, all applications are allowed."
+    }
+  ],
+  "metadata": {
+    "version": "3.0",
+    "exportDate": "2026-01-09T10:51:29.9856540+02:00",
+    "language": "en-US",
+    "totalPolicies": 4,
+    "totalFiles": 1,
+    "errorCount": 0,
+    "admxPath": "/Users/guylavian/admx-test/PolicyDefinitions"
+  }
+}

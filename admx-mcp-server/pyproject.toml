@@ -1,0 +1,23 @@
+[project]
+name = "admx-mcp-server"
+version = "1.0.0"
+description = "MCP Server for Windows ADMX Group Policy definitions with Hebrew support"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "mcp>=1.0.0",
+]
+
+[project.scripts]
+admx-mcp-server = "app.main:run"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

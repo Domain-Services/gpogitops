@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  # ADMX MCP Server with mcpo proxy
+  admx-mcp-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: admx-mcp-server
+    ports:
+      - "8001:8000"
+    volumes:
+      - ../ms-admx-dictionary.json:/data/ms-admx-dictionary.json:ro
+      - ./mock-gpo-data:/data/gpo-repo
+    environment:
+      - ADMX_DB_PATH=/data/ms-admx-dictionary.json
+      # GPO Repository - using local mock data (switch to GitHub later)
+      - GPO_REPO_PATH=/data/gpo-repo
+      # GitHub Integration (optional) - uncomment to enable
+      # - GITHUB_TOKEN=${GITHUB_TOKEN:-}
+      # - GPO_REPO_URL=${GPO_REPO_URL:-}
+    restart: unless-stopped
+    healthcheck:
+      # avoid curl dependency (python is available)
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://localhost:8000/docs').read(); print('ok')"
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # GitHub MCP Server
+  github-mcp-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.github
+    container_name: github-mcp-server
+    ports:
+      - "8002:8000"
+    environment:
+      - GITHUB_TOKEN=${GITHUB_TOKEN:-}
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://localhost:8000/docs').read(); print('ok')"
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Open WebUI - connects to host Ollama
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    ports:
+      - "3000:8080"
+    volumes:
+      - open-webui-data:/app/backend/data
+    environment:
+      # Connect to host Ollama (already running locally)
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434
+    depends_on:
+      - admx-mcp-server
+    restart: unless-stopped
+
+volumes:
+  open-webui-data:
+  gpo-repo:
+
+networks:
+  default:
+    name: admx-mcp-network

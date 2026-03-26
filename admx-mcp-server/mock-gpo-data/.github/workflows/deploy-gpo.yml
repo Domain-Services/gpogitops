@@ -1,0 +1,182 @@
+name: Deploy GPO to Windows
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - '**/*.xml'
+  pull_request:
+    branches: [main, master]
+    paths:
+      - '**/*.xml'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+env:
+  GPO_BACKUP_PATH: C:\GPO-Backups
+  GPO_DEPLOY_PATH: C:\GPO-Deploy
+
+jobs:
+  validate:
+    name: Validate GPO XML
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate XML files
+        run: |
+          echo "Validating GPO XML files..."
+          for file in $(find . -name "*.xml" -type f); do
+            echo "Checking: $file"
+            xmllint --noout "$file" || exit 1
+          done
+          echo "All XML files are valid"
+
+      - name: List changed GPO files
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "Changed GPO files in this PR:"
+          git diff --name-only origin/${{ github.base_ref }}...HEAD -- '*.xml' || true
+
+  deploy-staging:
+    name: Deploy to Staging
+    needs: validate
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging')
+    runs-on: [self-hosted, windows, gpo-staging]
+    environment: staging
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Backup Current GPOs
+        shell: pwsh
+        run: |
+          $backupDir = "$env:GPO_BACKUP_PATH\$(Get-Date -Format 'yyyy-MM-dd_HH-mm-ss')"
+          New-Item -ItemType Directory -Path $backupDir -Force
+
+          Write-Host "Backing up current GPOs to $backupDir"
+          # Backup existing GPO XML files
+          if (Test-Path "$env:GPO_DEPLOY_PATH") {
+            Copy-Item -Path "$env:GPO_DEPLOY_PATH\*" -Destination $backupDir -Recurse -Force
+          }
+
+          Write-Host "Backup completed"
+
+      - name: Deploy GPO XML Files
+        shell: pwsh
+        run: |
+          Write-Host "Deploying GPO XML files to staging..."
+
+          # Copy all XML files to deployment path
+          $sourcePath = "${{ github.workspace }}"
+          $destPath = $env:GPO_DEPLOY_PATH
+
+          # Ensure destination exists
+          New-Item -ItemType Directory -Path $destPath -Force
+
+          # Copy XML files maintaining directory structure
+          Get-ChildItem -Path $sourcePath -Filter "*.xml" -Recurse | ForEach-Object {
+            $relativePath = $_.FullName.Substring($sourcePath.Length + 1)
+            $destFile = Join-Path $destPath $relativePath
+            $destDir = Split-Path $destFile -Parent
+
+            if (!(Test-Path $destDir)) {
+              New-Item -ItemType Directory -Path $destDir -Force
+            }
+
+            Copy-Item -Path $_.FullName -Destination $destFile -Force
+            Write-Host "Deployed: $relativePath"
+          }
+
+      - name: Apply GPO Settings
+        shell: pwsh
+        run: |
+          Write-Host "Applying GPO settings..."
+          & "${{ github.workspace }}\scripts\Deploy-GPO.ps1" -Environment Staging -WhatIf:$false
+
+      - name: Verify Deployment
+        shell: pwsh
+        run: |
+          Write-Host "Verifying GPO deployment..."
+          & "${{ github.workspace }}\scripts\Verify-GPO.ps1"
+
+  deploy-production:
+    name: Deploy to Production
+    needs: deploy-staging
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production'
+    runs-on: [self-hosted, windows, gpo-production]
+    environment:
+      name: production
+      url: https://your-gpo-dashboard.com
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Backup Current GPOs
+        shell: pwsh
+        run: |
+          $backupDir = "$env:GPO_BACKUP_PATH\$(Get-Date -Format 'yyyy-MM-dd_HH-mm-ss')"
+          New-Item -ItemType Directory -Path $backupDir -Force
+          Write-Host "Backing up production GPOs to $backupDir"
+
+          if (Test-Path "$env:GPO_DEPLOY_PATH") {
+            Copy-Item -Path "$env:GPO_DEPLOY_PATH\*" -Destination $backupDir -Recurse -Force
+          }
+
+      - name: Deploy GPO XML Files
+        shell: pwsh
+        run: |
+          Write-Host "Deploying GPO XML files to production..."
+
+          $sourcePath = "${{ github.workspace }}"
+          $destPath = $env:GPO_DEPLOY_PATH
+
+          New-Item -ItemType Directory -Path $destPath -Force
+
+          Get-ChildItem -Path $sourcePath -Filter "*.xml" -Recurse | ForEach-Object {
+            $relativePath = $_.FullName.Substring($sourcePath.Length + 1)
+            $destFile = Join-Path $destPath $relativePath
+            $destDir = Split-Path $destFile -Parent
+
+            if (!(Test-Path $destDir)) {
+              New-Item -ItemType Directory -Path $destDir -Force
+            }
+
+            Copy-Item -Path $_.FullName -Destination $destFile -Force
+            Write-Host "Deployed: $relativePath"
+          }
+
+      - name: Apply GPO Settings
+        shell: pwsh
+        run: |
+          Write-Host "Applying GPO settings to production..."
+          & "${{ github.workspace }}\scripts\Deploy-GPO.ps1" -Environment Production -WhatIf:$false
+
+      - name: Force Group Policy Update
+        shell: pwsh
+        run: |
+          Write-Host "Forcing Group Policy update on domain..."
+          # Update local GP
+          gpupdate /force
+
+          # Optionally trigger update on all domain computers
+          # Invoke-GPUpdate -Computer "DC01" -Force
+
+      - name: Notify Deployment
+        if: always()
+        shell: pwsh
+        run: |
+          $status = "${{ job.status }}"
+          Write-Host "Deployment to production completed with status: $status"
+          # Add notification logic (Teams, Slack, email, etc.)

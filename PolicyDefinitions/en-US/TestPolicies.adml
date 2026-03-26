@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<policyDefinitionResources xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                           revision="1.0"
+                           schemaVersion="1.0"
+                           xmlns="http://schemas.microsoft.com/GroupPolicy/2006/07/PolicyDefinitions">
+  <displayName>Test Policies</displayName>
+  <description>Test policy definitions for ADMX parser validation</description>
+
+  <resources>
+    <stringTable>
+      <!-- Supported On strings -->
+      <string id="SUPPORTED_Windows10">Windows 10 and later</string>
+      <string id="SUPPORTED_WindowsAll">All Windows versions</string>
+
+      <!-- Category strings -->
+      <string id="TestCategory">Test Application Settings</string>
+      <string id="SecurityCategory">Security Settings</string>
+      <string id="NetworkCategory">Network Configuration</string>
+
+      <!-- EnableTestFeature policy -->
+      <string id="EnableTestFeature">Enable Test Feature</string>
+      <string id="EnableTestFeature_Help">This policy setting allows you to enable or disable the test feature.
+
+If you enable this policy setting, the test feature will be activated.
+
+If you disable this policy setting, the test feature will be deactivated.
+
+If you do not configure this policy setting, the default behavior applies.</string>
+
+      <!-- SecurityLevel policy -->
+      <string id="SecurityLevel">Configure Security Level</string>
+      <string id="SecurityLevel_Help">This policy setting allows you to configure the security level for the application.
+
+Select the desired security level from the dropdown menu:
+- Low: Minimal security checks
+- Medium: Standard security checks (recommended)
+- High: Maximum security with additional validation
+
+If you do not configure this policy setting, Medium security level is used by default.</string>
+      <string id="SecurityLevel_Low">Low - Minimal security</string>
+      <string id="SecurityLevel_Medium">Medium - Standard security (Recommended)</string>
+      <string id="SecurityLevel_High">High - Maximum security</string>
+
+      <!-- NetworkSettings policy -->
+      <string id="NetworkSettings">Configure Network Settings</string>
+      <string id="NetworkSettings_Help">This policy setting allows you to configure network proxy settings for the application.
+
+Enter the proxy server address and port number. Enable "Use Proxy" to activate the proxy configuration.
+
+If you do not configure this policy setting, direct connection is used.</string>
+
+      <!-- AllowedApplications policy -->
+      <string id="AllowedApplications">Allowed Applications List</string>
+      <string id="AllowedApplications_Help">This policy setting allows you to specify a list of applications that are allowed to run.
+
+Add the full path or name of each allowed application to the list.
+
+If you enable this policy setting, only applications in the list will be permitted.
+
+If you disable or do not configure this policy setting, all applications are allowed.</string>
+    </stringTable>
+
+    <presentationTable>
+      <presentation id="SecurityLevel">
+        <dropdownList refId="SecurityLevelDropdown" defaultItem="1">Select Security Level:</dropdownList>
+      </presentation>
+
+      <presentation id="NetworkSettings">
+        <textBox refId="ProxyServer">
+          <label>Proxy Server Address:</label>
+        </textBox>
+        <decimalTextBox refId="ProxyPort" defaultValue="8080">Proxy Port:</decimalTextBox>
+        <checkBox refId="UseProxy" defaultChecked="false">Enable Proxy</checkBox>
+      </presentation>
+
+      <presentation id="AllowedApplications">
+        <listBox refId="AllowedAppsList">Allowed Applications:</listBox>
+      </presentation>
+    </presentationTable>
+  </resources>
+</policyDefinitionResources>

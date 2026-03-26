@@ -1,0 +1,29 @@
+# Python virtual environment
+venv/
+.venv/
+env/
+
+# Compiled Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Test caches
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Distribution / packaging
+*.egg-info/
+dist/
+build/
+
+# Environment files (may contain secrets)
+.env
+.env.*
+
+# Editor artifacts
+.DS_Store
+*.swp
+*.swo

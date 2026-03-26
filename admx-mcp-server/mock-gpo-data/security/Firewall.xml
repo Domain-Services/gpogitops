@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Collection clsid="{53B533F5-224C-47e3-B01B-CA3B3F3FF4BF}" name="Windows Firewall Settings">
+
+<Registry
+         clsid="{9CD4B2F4-923D-47f5-A062-E897DD1DAD50}"
+         name="Enable Windows Firewall (Domain Profile)"
+         status="EnableFirewall"
+         image="12"
+         changed="2024-01-15 10:30:00"
+         uid="{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}"
+         desc="&lt;b&gt;Enable Windows Firewall&lt;/b&gt;&lt;p&gt;
+            Enables or disables Windows Firewall for the Domain profile.&lt;p&gt;
+            &lt;b&gt;1&lt;/b&gt; --  Enable&lt;br&gt;
+            &lt;b&gt;0&lt;/b&gt; --  Disable"
+         bypassErrors="1">
+   <Properties
+         action="U"
+         displayDecimal="1"
+         default="1"
+         hive="HKEY_LOCAL_MACHINE"
+         key="SOFTWARE\Policies\Microsoft\WindowsFirewall\DomainProfile"
+         name="EnableFirewall"
+         type="REG_DWORD"
+         value="00000001"/>
+</Registry>
+
+<Registry
+         clsid="{9CD4B2F4-923D-47f5-A062-E897DD1DAD50}"
+         name="Block Inbound Connections (Domain Profile)"
+         status="DefaultInboundAction"
+         image="12"
+         changed="2024-01-15 10:32:00"
+         uid="{B2C3D4E5-F6A7-8901-BCDE-F23456789012}"
+         desc="&lt;b&gt;Default Inbound Action&lt;/b&gt;&lt;p&gt;
+            Specifies the default action for inbound connections.&lt;p&gt;
+            &lt;b&gt;0&lt;/b&gt; --  Allow&lt;br&gt;
+            &lt;b&gt;1&lt;/b&gt; --  Block"
+         bypassErrors="1">
+   <Properties
+         action="U"
+         displayDecimal="1"
+         default="1"
+         hive="HKEY_LOCAL_MACHINE"
+         key="SOFTWARE\Policies\Microsoft\WindowsFirewall\DomainProfile"
+         name="DefaultInboundAction"
+         type="REG_DWORD"
+         value="00000001"/>
+</Registry>
+
+<Registry
+         clsid="{9CD4B2F4-923D-47f5-A062-E897DD1DAD50}"
+         name="Allow ICMP Echo Request"
+         status="AllowICMPv4EchoRequest"
+         image="12"
+         changed="2024-01-15 10:35:00"
+         uid="{C3D4E5F6-A7B8-9012-CDEF-345678901234}"
+         desc="&lt;b&gt;Allow ICMP Echo Request (Ping)&lt;/b&gt;&lt;p&gt;
+            Allow computers to respond to ping requests.&lt;p&gt;
+            &lt;b&gt;1&lt;/b&gt; --  Allow&lt;br&gt;
+            &lt;b&gt;0&lt;/b&gt; --  Block"
+         bypassErrors="1">
+   <Properties
+         action="U"
+         displayDecimal="1"
+         default="0"
+         hive="HKEY_LOCAL_MACHINE"
+         key="SOFTWARE\Policies\Microsoft\WindowsFirewall\ICMPSettings"
+         name="AllowICMPv4EchoRequest"
+         type="REG_DWORD"
+         value="00000001"/>
+</Registry>
+
+</Collection>

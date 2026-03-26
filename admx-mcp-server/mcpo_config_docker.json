@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "admx-policies": {
+      "command": "python",
+      "args": ["/app/server.py"],
+      "env": {
+        "ADMX_DB_PATH": "/data/ms-admx-dictionary.json"
+      }
+    }
+  }
+}

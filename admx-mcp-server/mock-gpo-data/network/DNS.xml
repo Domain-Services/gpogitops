@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Collection clsid="{53B533F5-224C-47e3-B01B-CA3B3F3FF4BF}" name="DNS Client Settings">
+
+<Registry
+         clsid="{9CD4B2F4-923D-47f5-A062-E897DD1DAD50}"
+         name="DNS over HTTPS (DoH)"
+         status="EnableDoH"
+         image="12"
+         changed="2024-06-01 14:20:00"
+         uid="{D4E5F6A7-B8C9-0123-DEF0-456789012345}"
+         desc="&lt;b&gt;Enable DNS over HTTPS&lt;/b&gt;&lt;p&gt;
+            Configures DNS over HTTPS for enhanced privacy.&lt;p&gt;
+            &lt;b&gt;0&lt;/b&gt; --  Disable DoH&lt;br&gt;
+            &lt;b&gt;1&lt;/b&gt; --  Allow DoH&lt;br&gt;
+            &lt;b&gt;2&lt;/b&gt; --  Require DoH"
+         bypassErrors="1">
+   <Properties
+         action="U"
+         displayDecimal="1"
+         default="0"
+         hive="HKEY_LOCAL_MACHINE"
+         key="SOFTWARE\Policies\Microsoft\Windows NT\DNSClient"
+         name="DoHPolicy"
+         type="REG_DWORD"
+         value="00000002"/>
+</Registry>
+
+<Registry
+         clsid="{9CD4B2F4-923D-47f5-A062-E897DD1DAD50}"
+         name="Primary DNS Suffix"
+         status="PrimaryDnsSuffix"
+         image="12"
+         changed="2024-06-01 14:25:00"
+         uid="{E5F6A7B8-C9D0-1234-EF01-567890123456}"
+         desc="&lt;b&gt;Primary DNS Suffix&lt;/b&gt;&lt;p&gt;
+            Sets the primary DNS suffix for the computer."
+         bypassErrors="1">
+   <Properties
+         action="U"
+         displayDecimal="0"
+         default=""
+         hive="HKEY_LOCAL_MACHINE"
+         key="SOFTWARE\Policies\Microsoft\Windows NT\DNSClient"
+         name="PrimaryDnsSuffix"
+         type="REG_SZ"
+         value="corp.contoso.com"/>
+</Registry>
+
+</Collection>
