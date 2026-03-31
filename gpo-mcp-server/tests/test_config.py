@@ -14,8 +14,6 @@ def test_validate_warns_backend_boundary_without_url():
         protected_branches=("main",),
         default_target_branch="main",
         allowed_pr_target_branches=("main",),
-        require_pr_reviewers=True,
-        min_pr_reviewers=1,
         backend_api_url=None,
         backend_api_token=None,
         backend_api_host="127.0.0.1",
@@ -23,6 +21,7 @@ def test_validate_warns_backend_boundary_without_url():
         bitbucket_workspace=None,
         bitbucket_repo_slug=None,
         bitbucket_token=None,
+        max_bytes_per_req=50_000_000,
         allow_direct_git_writes=False,
         enforce_backend_boundary=True,
         audit_log_path=None,
@@ -41,8 +40,6 @@ def test_validate_warns_backend_url_without_token():
         protected_branches=("main",),
         default_target_branch="main",
         allowed_pr_target_branches=("main",),
-        require_pr_reviewers=False,
-        min_pr_reviewers=0,
         backend_api_url="http://localhost:8088",
         backend_api_token=None,
         backend_api_host="127.0.0.1",
@@ -50,6 +47,7 @@ def test_validate_warns_backend_url_without_token():
         bitbucket_workspace=None,
         bitbucket_repo_slug=None,
         bitbucket_token=None,
+        max_bytes_per_req=50_000_000,
         allow_direct_git_writes=False,
         enforce_backend_boundary=False,
         audit_log_path=None,
@@ -68,8 +66,6 @@ def test_validate_warns_permissive_flags():
         protected_branches=("main",),
         default_target_branch="main",
         allowed_pr_target_branches=("main",),
-        require_pr_reviewers=True,
-        min_pr_reviewers=1,
         backend_api_url=None,
         backend_api_token=None,
         backend_api_host="127.0.0.1",
@@ -77,6 +73,7 @@ def test_validate_warns_permissive_flags():
         bitbucket_workspace=None,
         bitbucket_repo_slug=None,
         bitbucket_token=None,
+        max_bytes_per_req=50_000_000,
         allow_direct_git_writes=True,
         enforce_backend_boundary=False,
         audit_log_path=None,
@@ -85,33 +82,6 @@ def test_validate_warns_permissive_flags():
     warnings = s.validate()
     assert any("ALLOW_DIRECT_GIT_WRITES" in w for w in warnings)
     assert any("ENFORCE_BACKEND_BOUNDARY" in w for w in warnings)
-
-
-def test_validate_warns_reviewer_misconfiguration():
-    """validate() should warn when reviewers required but min is 0."""
-    s = Settings(
-        repo_path="/tmp/test",
-        repo_url="https://example.com/repo.git",
-        git_token=None,
-        protected_branches=("main",),
-        default_target_branch="main",
-        allowed_pr_target_branches=("main",),
-        require_pr_reviewers=True,
-        min_pr_reviewers=0,
-        backend_api_url=None,
-        backend_api_token=None,
-        backend_api_host="127.0.0.1",
-        backend_api_port=8088,
-        bitbucket_workspace=None,
-        bitbucket_repo_slug=None,
-        bitbucket_token=None,
-        allow_direct_git_writes=False,
-        enforce_backend_boundary=True,
-        audit_log_path=None,
-        environment="test",
-    )
-    warnings = s.validate()
-    assert any("no practical effect" in w for w in warnings)
 
 
 def test_validate_warns_partial_bitbucket_config():
@@ -123,8 +93,6 @@ def test_validate_warns_partial_bitbucket_config():
         protected_branches=("main",),
         default_target_branch="main",
         allowed_pr_target_branches=("main",),
-        require_pr_reviewers=False,
-        min_pr_reviewers=0,
         backend_api_url=None,
         backend_api_token=None,
         backend_api_host="127.0.0.1",
@@ -132,6 +100,7 @@ def test_validate_warns_partial_bitbucket_config():
         bitbucket_workspace="acme",
         bitbucket_repo_slug=None,
         bitbucket_token=None,
+        max_bytes_per_req=50_000_000,
         allow_direct_git_writes=False,
         enforce_backend_boundary=True,
         audit_log_path=None,
@@ -150,8 +119,6 @@ def test_validate_clean_config_no_warnings():
         protected_branches=("main",),
         default_target_branch="main",
         allowed_pr_target_branches=("main",),
-        require_pr_reviewers=True,
-        min_pr_reviewers=1,
         backend_api_url="http://localhost:8088",
         backend_api_token="secret",
         backend_api_host="127.0.0.1",
@@ -159,6 +126,7 @@ def test_validate_clean_config_no_warnings():
         bitbucket_workspace="acme",
         bitbucket_repo_slug="gpo-repo",
         bitbucket_token="bb-tok",
+        max_bytes_per_req=50_000_000,
         allow_direct_git_writes=False,
         enforce_backend_boundary=True,
         audit_log_path=None,

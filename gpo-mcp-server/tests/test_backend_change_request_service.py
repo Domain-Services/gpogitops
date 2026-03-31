@@ -99,8 +99,6 @@ def test_change_request_requires_supported_operation(monkeypatch):
 def test_create_pr_change_success(monkeypatch, temp_repo):
     monkeypatch.setattr(config.settings, "repo_path", temp_repo)
     monkeypatch.setattr(config.settings, "allowed_pr_target_branches", ("main",))
-    monkeypatch.setattr(config.settings, "require_pr_reviewers", True)
-    monkeypatch.setattr(config.settings, "min_pr_reviewers", 1)
 
     svc = ChangeRequestService(git_factory=FakeGitService, bitbucket_factory=FakeBitbucketService)
     status, payload = svc.handle_request(
@@ -126,7 +124,6 @@ def test_create_pr_change_success(monkeypatch, temp_repo):
 def test_create_pr_change_rejects_disallowed_target(monkeypatch, temp_repo):
     monkeypatch.setattr(config.settings, "repo_path", temp_repo)
     monkeypatch.setattr(config.settings, "allowed_pr_target_branches", ("main",))
-    monkeypatch.setattr(config.settings, "require_pr_reviewers", False)
 
     svc = ChangeRequestService(git_factory=FakeGitService, bitbucket_factory=FakeBitbucketService)
     status, payload = svc.handle_request(
@@ -144,34 +141,11 @@ def test_create_pr_change_rejects_disallowed_target(monkeypatch, temp_repo):
     assert payload["error"] == "target_branch not allowed"
 
 
-def test_create_pr_change_requires_reviewers(monkeypatch, temp_repo):
-    monkeypatch.setattr(config.settings, "repo_path", temp_repo)
-    monkeypatch.setattr(config.settings, "allowed_pr_target_branches", ("main",))
-    monkeypatch.setattr(config.settings, "require_pr_reviewers", True)
-    monkeypatch.setattr(config.settings, "min_pr_reviewers", 2)
-
-    svc = ChangeRequestService(git_factory=FakeGitService, bitbucket_factory=FakeBitbucketService)
-    status, payload = svc.handle_request(
-        {
-            "operation": "create_pr_change",
-            "payload": {
-                "message": "update setting",
-                "title": "Update setting",
-                "target_branch": "main",
-                "reviewers": ["alice"],
-            },
-        }
-    )
-
-    assert status == 400
-    assert payload["error"] == "insufficient reviewers"
-
-
 def test_create_pr_change_missing_message(monkeypatch, temp_repo):
     """Should reject requests with empty message."""
     monkeypatch.setattr(config.settings, "repo_path", temp_repo)
     monkeypatch.setattr(config.settings, "allowed_pr_target_branches", ("main",))
-    monkeypatch.setattr(config.settings, "require_pr_reviewers", False)
+
 
     svc = ChangeRequestService(git_factory=FakeGitService, bitbucket_factory=FakeBitbucketService)
     status, payload = svc.handle_request(
@@ -192,7 +166,7 @@ def test_create_pr_change_missing_title(monkeypatch, temp_repo):
     """Should reject requests with empty title."""
     monkeypatch.setattr(config.settings, "repo_path", temp_repo)
     monkeypatch.setattr(config.settings, "allowed_pr_target_branches", ("main",))
-    monkeypatch.setattr(config.settings, "require_pr_reviewers", False)
+
 
     svc = ChangeRequestService(git_factory=FakeGitService, bitbucket_factory=FakeBitbucketService)
     status, payload = svc.handle_request(
@@ -213,7 +187,7 @@ def test_create_pr_change_no_changes(monkeypatch, temp_repo):
     """Should return 409 when there are no uncommitted changes to commit."""
     monkeypatch.setattr(config.settings, "repo_path", temp_repo)
     monkeypatch.setattr(config.settings, "allowed_pr_target_branches", ("main",))
-    monkeypatch.setattr(config.settings, "require_pr_reviewers", False)
+
 
     svc = ChangeRequestService(git_factory=FakeGitNoChanges, bitbucket_factory=FakeBitbucketService)
     status, payload = svc.handle_request(
@@ -234,7 +208,7 @@ def test_create_pr_change_duplicate_pr(monkeypatch, temp_repo):
     """Should return 200 with duplicate status when PR already exists."""
     monkeypatch.setattr(config.settings, "repo_path", temp_repo)
     monkeypatch.setattr(config.settings, "allowed_pr_target_branches", ("main",))
-    monkeypatch.setattr(config.settings, "require_pr_reviewers", False)
+
 
     svc = ChangeRequestService(git_factory=FakeGitService, bitbucket_factory=FakeBitbucketDuplicate)
     status, payload = svc.handle_request(
@@ -256,7 +230,7 @@ def test_create_pr_change_lookup_failed(monkeypatch, temp_repo):
     """Should return 502 when duplicate PR check fails (API error)."""
     monkeypatch.setattr(config.settings, "repo_path", temp_repo)
     monkeypatch.setattr(config.settings, "allowed_pr_target_branches", ("main",))
-    monkeypatch.setattr(config.settings, "require_pr_reviewers", False)
+
 
     svc = ChangeRequestService(git_factory=FakeGitService, bitbucket_factory=FakeBitbucketLookupFailed)
     status, payload = svc.handle_request(
@@ -323,7 +297,7 @@ def test_create_pr_change_falls_back_to_tracking_branch(monkeypatch, temp_repo):
     """When create_branch and checkout_branch both fail, should try checkout_tracking_branch."""
     monkeypatch.setattr(config.settings, "repo_path", temp_repo)
     monkeypatch.setattr(config.settings, "allowed_pr_target_branches", ("main",))
-    monkeypatch.setattr(config.settings, "require_pr_reviewers", False)
+
 
     git_instance = FakeGitServiceRemoteOnly()
     git_instance.repo_path = temp_repo
@@ -385,7 +359,7 @@ def test_create_pr_change_fails_when_all_checkout_attempts_fail(monkeypatch, tem
     """Should return 409 when create, checkout, and tracking checkout all fail."""
     monkeypatch.setattr(config.settings, "repo_path", temp_repo)
     monkeypatch.setattr(config.settings, "allowed_pr_target_branches", ("main",))
-    monkeypatch.setattr(config.settings, "require_pr_reviewers", False)
+
 
     git_instance = FakeGitServiceAllCheckoutsFail()
     git_instance.repo_path = temp_repo

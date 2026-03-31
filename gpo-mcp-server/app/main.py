@@ -44,8 +44,6 @@ def run():
             "environment": config.settings.environment,
             "enforce_backend_boundary": config.settings.enforce_backend_boundary,
             "allow_direct_git_writes": config.settings.allow_direct_git_writes,
-            "require_pr_reviewers": config.settings.require_pr_reviewers,
-            "min_pr_reviewers": config.settings.min_pr_reviewers,
             "protected_branches": list(config.settings.protected_branches),
             "config_warnings": config.settings._warnings,
         },

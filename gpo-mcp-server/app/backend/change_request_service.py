@@ -70,13 +70,6 @@ class ChangeRequestService:
                 "allowed": sorted(allowed_targets),
             }
 
-        if config.settings.require_pr_reviewers and len(reviewers) < config.settings.min_pr_reviewers:
-            return 400, {
-                "error": "insufficient reviewers",
-                "required": config.settings.min_pr_reviewers,
-                "received": len(reviewers),
-            }
-
         git = self.git_factory()
         bb = self.bitbucket_factory()
 

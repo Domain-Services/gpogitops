@@ -251,7 +251,7 @@ def test_workflow_tools_set_and_clear_correlation_id(monkeypatch):
 def test_workflow_pr_tool_clears_correlation_id(monkeypatch):
     """gpo_create_pull_request should clear correlation ID even on early return."""
     monkeypatch.setattr(config.settings, "allowed_pr_target_branches", ("main",))
-    monkeypatch.setattr(config.settings, "require_pr_reviewers", False)
+
 
     clear_correlation_id()
 
@@ -375,7 +375,7 @@ def test_git_clone_or_pull_fails_when_status_fails(monkeypatch, temp_repo):
 def test_create_pull_request_blocks_disallowed_target(monkeypatch):
     """Workflow should reject PRs targeting disallowed branches."""
     monkeypatch.setattr(config.settings, "allowed_pr_target_branches", ("main",))
-    monkeypatch.setattr(config.settings, "require_pr_reviewers", False)
+
 
     class FakeBitbucketService:
         def find_open_pull_request(self, source_branch: str, target_branch: str):
@@ -401,40 +401,10 @@ def test_create_pull_request_blocks_disallowed_target(monkeypatch):
     assert out.startswith("ERROR: target_branch is not allowed")
 
 
-def test_create_pull_request_requires_reviewers(monkeypatch):
-    """Workflow should enforce minimum reviewer count when configured."""
-    monkeypatch.setattr(config.settings, "allowed_pr_target_branches", ("main",))
-    monkeypatch.setattr(config.settings, "require_pr_reviewers", True)
-    monkeypatch.setattr(config.settings, "min_pr_reviewers", 2)
-
-    class FakeBitbucketService:
-        def find_open_pull_request(self, source_branch: str, target_branch: str):
-            return PRLookupResult.NOT_FOUND, {}
-
-        def create_pull_request(self, **kwargs):
-            return True, {"id": 1, "links": {"html": {"href": "http://example"}}}
-
-    import app.tools.workflow as workflow_mod
-
-    monkeypatch.setattr(workflow_mod, "BitbucketService", FakeBitbucketService)
-
-    mcp = FakeMCP()
-    register_workflow_tools(mcp)
-    out = mcp.tools["gpo_create_pull_request"](
-        title="test",
-        source_branch="gpo/abc",
-        target_branch="main",
-        description="",
-        reviewers_csv="alice",
-    )
-
-    assert out.startswith("ERROR: At least 2 reviewer(s) are required")
-
-
 def test_create_pull_request_blocks_duplicate_open_pr(monkeypatch):
     """Workflow should block duplicate open PRs for same source/target."""
     monkeypatch.setattr(config.settings, "allowed_pr_target_branches", ("main",))
-    monkeypatch.setattr(config.settings, "require_pr_reviewers", False)
+
 
     class FakeBitbucketService:
         def find_open_pull_request(self, source_branch: str, target_branch: str):
@@ -463,7 +433,7 @@ def test_create_pull_request_blocks_duplicate_open_pr(monkeypatch):
 def test_create_pull_request_blocks_on_lookup_failure(monkeypatch):
     """Workflow should refuse to create PR when duplicate check fails."""
     monkeypatch.setattr(config.settings, "allowed_pr_target_branches", ("main",))
-    monkeypatch.setattr(config.settings, "require_pr_reviewers", False)
+
 
     class FakeBitbucketService:
         def find_open_pull_request(self, source_branch: str, target_branch: str):
@@ -509,7 +479,7 @@ def test_submit_change_request_requires_configured_backend(monkeypatch):
 def test_create_pull_request_empty_source_branch(monkeypatch):
     """PR creation should reject empty source branch."""
     monkeypatch.setattr(config.settings, "allowed_pr_target_branches", ("main",))
-    monkeypatch.setattr(config.settings, "require_pr_reviewers", False)
+
 
     mcp = FakeMCP()
     register_workflow_tools(mcp)

@@ -28,8 +28,6 @@ MCP server for searching and editing GPO XML source files with Git workflow tool
 | `GPO_PROTECTED_BRANCHES` | Comma-separated protected branches | `main,master,production,prod` |
 | `GPO_DEFAULT_TARGET_BRANCH` | Default PR target | `main` |
 | `GPO_ALLOWED_PR_TARGET_BRANCHES` | Comma-separated allowed PR targets | `main` |
-| `GPO_REQUIRE_PR_REVIEWERS` | Require reviewers when opening PRs | `true` |
-| `GPO_MIN_PR_REVIEWERS` | Minimum required reviewers | `1` |
 | `GPO_BACKEND_API_URL` | Internal privileged API base URL | unset |
 | `GPO_BACKEND_API_TOKEN` | Backend API bearer token | unset |
 | `GPO_BACKEND_API_HOST` | Backend API bind host | `127.0.0.1` |

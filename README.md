@@ -37,7 +37,3 @@ From [gpo-json-repo](gpo-json-repo):
 - Local apply changes machine registry only; it does not update domain GPO objects.
 - AD GPO apply must run on Windows with proper domain permissions.
 
-
-
-## TODO:
-- remove checking of pr reviews inside the code(this is already implemented on github level)

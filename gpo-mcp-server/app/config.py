@@ -1,4 +1,4 @@
-f"""Configuration and environment settings."""
+"""Configuration and environment settings."""
 
 import logging
 import os
@@ -21,8 +21,6 @@ class Settings:
     protected_branches: tuple[str, ...]
     default_target_branch: str
     allowed_pr_target_branches: tuple[str, ...]
-    require_pr_reviewers: bool
-    min_pr_reviewers: int
 
     # Internal backend API (privileged execution boundary)
     backend_api_url: str | None
@@ -34,6 +32,9 @@ class Settings:
     bitbucket_workspace: str | None
     bitbucket_repo_slug: str | None
     bitbucket_token: str | None
+
+    # HTTP request limits
+    max_bytes_per_req: int
 
     # Security / audit settings
     allow_direct_git_writes: bool
@@ -82,13 +83,6 @@ class Settings:
                 "Privileged execution boundary is not enforced."
             )
 
-        # --- PR / reviewer consistency ---
-        if self.require_pr_reviewers and self.min_pr_reviewers < 1:
-            warnings.append(
-                "GPO_REQUIRE_PR_REVIEWERS is true but GPO_MIN_PR_REVIEWERS is 0. "
-                "Reviewer requirement has no practical effect."
-            )
-
         # --- Bitbucket partial configuration ---
         bb_fields = [self.bitbucket_workspace, self.bitbucket_repo_slug, self.bitbucket_token]
         bb_set = sum(1 for f in bb_fields if f)
@@ -118,13 +112,10 @@ class Settings:
         """Log a startup configuration summary and any validation warnings."""
         logger.info(
             "Config summary: environment=%s enforce_backend_boundary=%s "
-            "allow_direct_git_writes=%s require_pr_reviewers=%s "
-            "min_pr_reviewers=%d protected_branches=%s",
+            "allow_direct_git_writes=%s protected_branches=%s",
             self.environment,
             self.enforce_backend_boundary,
             self.allow_direct_git_writes,
-            self.require_pr_reviewers,
-            self.min_pr_reviewers,
             ",".join(self.protected_branches),
         )
         for warning in self._warnings:
@@ -152,15 +143,6 @@ class Settings:
             "1", "true", "yes", "on"
         }
 
-        require_pr_reviewers = os.environ.get("GPO_REQUIRE_PR_REVIEWERS", "true").lower() in {
-            "1", "true", "yes", "on"
-        }
-
-        try:
-            min_pr_reviewers = int(os.environ.get("GPO_MIN_PR_REVIEWERS", "2"))
-        except ValueError:
-            min_pr_reviewers = 2
-        min_pr_reviewers = max(0, min_pr_reviewers)
         audit_log_path_raw = os.environ.get("GPO_AUDIT_LOG_PATH", "")
         audit_log_path = Path(audit_log_path_raw) if audit_log_path_raw else None
 
@@ -171,8 +153,6 @@ class Settings:
             protected_branches=protected_branches,
             default_target_branch=os.environ.get("GPO_DEFAULT_TARGET_BRANCH", "main"),
             allowed_pr_target_branches=allowed_pr_target_branches,
-            require_pr_reviewers=require_pr_reviewers,
-            min_pr_reviewers=min_pr_reviewers,
             backend_api_url=os.environ.get("GPO_BACKEND_API_URL"),
             backend_api_token=os.environ.get("GPO_BACKEND_API_TOKEN"),
             backend_api_host=os.environ.get("GPO_BACKEND_API_HOST", "127.0.0.1"),

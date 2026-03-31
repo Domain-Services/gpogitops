@@ -174,11 +174,6 @@ def register_workflow_tools(mcp):
                 )
 
             reviewers = [r.strip() for r in reviewers_csv.split(",") if r.strip()]
-            if config.settings.require_pr_reviewers and len(reviewers) < config.settings.min_pr_reviewers:
-                return (
-                    f"ERROR: At least {config.settings.min_pr_reviewers} reviewer(s) are required. "
-                    f"Received {len(reviewers)}."
-                )
 
             lookup_result, existing = bb.find_open_pull_request(source_branch=source, target_branch=target)
             if lookup_result == PRLookupResult.LOOKUP_FAILED:
